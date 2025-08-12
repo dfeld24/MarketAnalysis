@@ -32,17 +32,37 @@ def scrape_book(product_page_url):
     }
     return book_data
 
-#test that is working
-url = "http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-book_info = scrape_book(url)
-print(book_info)
+from urllib.parse import urljoin
 
-with open('book_data.csv', mode='w', newline='', encoding='utf-8') as file:
-    # Create a DictWriter using the dictionary keys as column names
-    writer = csv.DictWriter(file, fieldnames=book_info.keys())
-    
-    # Write the header row
+def get_book_links_from_category(category_url):
+    page = requests.get(category_url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    book_links = []
+    for a_tag in soup.select('article.product_pod h3 a'):
+        relative_url = a_tag['href']
+        full_url = urljoin(category_url, relative_url)
+        book_links.append(full_url)
+
+    return book_links
+
+def scrape_category(category_url):
+    all_books = []
+
+    book_links = get_book_links_from_category(category_url)
+
+    for link in book_links:
+        book_data = scrape_book(link)
+        all_books.append(book_data)
+
+    return all_books
+
+#test that is working
+category_url = "http://books.toscrape.com/catalogue/category/books/historical-fiction_4/index.html"
+books_data = scrape_category(category_url)
+
+with open('category_books.csv', mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.DictWriter(file, fieldnames=books_data[0].keys())
     writer.writeheader()
-    
-    # Write the single row of book data
-    writer.writerow(book_info)
+    for book in books_data:
+        writer.writerow(book)
