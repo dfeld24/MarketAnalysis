@@ -36,3 +36,13 @@ def scrape_book(product_page_url):
 url = "http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 book_info = scrape_book(url)
 print(book_info)
+
+with open('book_data.csv', mode='w', newline='', encoding='utf-8') as file:
+    # Create a DictWriter using the dictionary keys as column names
+    writer = csv.DictWriter(file, fieldnames=book_info.keys())
+    
+    # Write the header row
+    writer.writeheader()
+    
+    # Write the single row of book data
+    writer.writerow(book_info)
