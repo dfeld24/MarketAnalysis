@@ -1,5 +1,6 @@
 book_data.csv
 Test_book_links
+arch-script.py
 /images
 /.venv
 *.csv
