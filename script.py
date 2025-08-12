@@ -27,7 +27,7 @@ price_excludes_tax = price_excludes_tax.text
 print(price_excludes_tax)
 
 # Price (inc. tax)
-price_includes_tax = soup.select_one("#content_inner > article > table > tr:nth-child(3) > td")
+price_includes_tax = soup.select_one("#content_inner > article > table > tr:nth-child(4) > td")
 price_includes_tax = price_includes_tax.text
 print(price_includes_tax)
 
@@ -45,3 +45,29 @@ print(product_description)
 category = soup.select_one("#default > div > div > ul > li:nth-child(3) > a")
 category = category.text
 print(category)
+
+# Write scraped data to CSV
+with open('book_data.csv', mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.writer(file)
+    
+    # Header row
+    writer.writerow([
+        "Product Page URL", 
+        "UPC", 
+        "Price (excl. tax)", 
+        "Price (incl. tax)", 
+        "Quantity Available", 
+        "Product Description", 
+        "Category"
+    ])
+    
+    # Data row
+    writer.writerow([
+        product_page_url, 
+        upc, 
+        price_excludes_tax, 
+        price_includes_tax, 
+        quantity_available, 
+        product_description, 
+        category
+    ])
